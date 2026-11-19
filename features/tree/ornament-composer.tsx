@@ -38,6 +38,7 @@ import {
   type Position,
 } from "./rules";
 import { shrinkImage } from "./shrink-image";
+import { trimTransparent } from "./trim-transparent";
 import type { VisitorOrnament } from "./tree-api";
 
 type Photo =
@@ -80,10 +81,12 @@ export function OrnamentComposer({
     setPhoto({ status: "busy" });
     try {
       const { removeBackground } = await import("@imgly/background-removal");
-      const blob = await removeBackground(await shrinkImage(file), {
-        model: "isnet_quint8",
-        output: { format: "image/png" },
-      });
+      const blob = await trimTransparent(
+        await removeBackground(await shrinkImage(file), {
+          model: "isnet_quint8",
+          output: { format: "image/png" },
+        }),
+      );
       if (pickId !== latestPick.current) return;
       setPhoto({ status: "done", blob, previewUrl: URL.createObjectURL(blob) });
     } catch {
