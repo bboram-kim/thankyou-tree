@@ -16,13 +16,19 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { RiAlertLine } from "@remixicon/react";
+import { RiAlertLine, RiMapPinLine } from "@remixicon/react";
 
 import { createTreeAction } from "./actions";
 import { copyLink } from "./copy-link";
+import { locateGrid } from "./locate";
 import { canCreateTree, OWNER_NAME_MAX } from "./rules";
 
-type Created = { ownerName: string; shareToken: string; ownerToken: string };
+type Created = {
+  ownerName: string;
+  shareToken: string;
+  ownerToken: string;
+  regionFallback: boolean;
+};
 
 export function CreateTreeForm() {
   const [name, setName] = useState("");
@@ -37,8 +43,9 @@ export function CreateTreeForm() {
     setFailed(false);
     try {
       const ownerName = name.trim();
-      const tokens = await createTreeAction(ownerName);
-      setCreated({ ownerName, ...tokens });
+      const region = await locateGrid();
+      const result = await createTreeAction(ownerName, region);
+      setCreated({ ownerName, ...result });
     } catch {
       setFailed(true);
     } finally {
@@ -69,6 +76,10 @@ export function CreateTreeForm() {
           <FieldDescription className="flex justify-between">
             <span>트리에 &ldquo;{name.trim() || "이름"}의 트리&rdquo;로 보여요</span>
             <span>{`${name.length}/${OWNER_NAME_MAX}`}</span>
+          </FieldDescription>
+          <FieldDescription>
+            트리에 내 동네의 날씨와 낮밤을 담으려고, 만들 때 위치를 한 번 물어봐요.
+            정확한 위치는 저장하지 않아요.
           </FieldDescription>
         </Field>
         {failed ? (
@@ -123,13 +134,22 @@ function LinkCard({
   );
 }
 
-function Links({ ownerName, shareToken, ownerToken }: Created) {
+function Links({ ownerName, shareToken, ownerToken, regionFallback }: Created) {
   return (
     <>
       <PageHead
         title={`${ownerName}의 트리가 생겼어요`}
         description="링크가 두 개예요. 용도가 달라요."
       />
+      {regionFallback ? (
+        <Alert>
+          <RiMapPinLine />
+          <AlertTitle>위치를 받지 못해 서울 날씨로 보여요</AlertTitle>
+          <AlertDescription>
+            트리 배경에는 서울의 지금 날씨와 낮밤이 담겨요.
+          </AlertDescription>
+        </Alert>
+      ) : null}
       <LinkCard
         title="공유 링크"
         description="카카오톡이나 인스타그램 프로필에 올려 주세요. 이 링크로는 트리를 보고 오너먼트를 달 수 있어요."

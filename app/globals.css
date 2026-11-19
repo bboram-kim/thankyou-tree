@@ -2,7 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* 밤: 트리 지역이 밤인 화면은 [data-night-page] 표시를 렌더해 문서 전체를 다크 토큰으로 바꾼다. */
+@custom-variant dark (&:is(.dark *, :root:has([data-night-page]) *));
 
 @theme inline {
   --color-background: var(--background);
@@ -85,15 +86,15 @@
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.25);
   /* 트리 표면(직접 그리는 핵심 화면) */
-  --scene-top: oklch(0.96 0.02 85);
-  --scene-bottom: oklch(0.93 0.025 80);
   --tree: oklch(0.42 0.08 155);
   --tree-dark: oklch(0.35 0.07 155);
   --trunk: oklch(0.42 0.06 55);
   --star: oklch(0.82 0.14 85);
 }
 
-.dark {
+.dark,
+:root:has([data-night-page]) {
+  color-scheme: dark;
   --background: oklch(0.147 0.004 49.25);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
@@ -138,3 +139,46 @@
     @apply font-sans;
   }
 }
+/* ── 트리 장면: "안개와 역광" 연출(docs/specs/tree-weather-daynight/prototype.html) ── */
+.tree-scene {
+  isolation: isolate;
+  background: linear-gradient(var(--sky1), var(--sky2) 70%, var(--sky3));
+}
+/* 트리 색 보정: 장면의 빛에 맞춘다 */
+.tree-scene .scene-tree { filter: saturate(.7) brightness(.9) contrast(1.05); }
+.tree-scene:is([data-weather="rain"], [data-weather="cloudy"]) .scene-tree { filter: saturate(.55) brightness(.82); }
+.tree-scene[data-time="night"] .scene-tree { filter: saturate(.6) brightness(.48) contrast(1.1); }
+.tree-scene[data-time="night"] .scene-ornament img { filter: brightness(.78) sepia(.15); }
+/* 전구: 낮엔 꺼져 있고 밤엔 켜져 반짝인다 */
+.tree-scene .scene-bulb { fill: oklch(0.75 0.02 80 / .35); }
+.tree-scene[data-time="night"] .scene-bulb {
+  fill: oklch(0.95 0.12 85);
+  filter: drop-shadow(0 0 2px oklch(0.95 0.12 85)) drop-shadow(0 0 7px oklch(0.82 0.16 65));
+  animation: scene-twinkle 3s ease-in-out infinite;
+}
+.tree-scene[data-time="night"] .scene-star {
+  filter: drop-shadow(0 0 6px oklch(0.92 0.13 85)) drop-shadow(0 0 16px oklch(0.85 0.15 75));
+}
+@keyframes scene-twinkle { 50% { opacity: .6; } }
+/* 날씨 입자 */
+.tree-scene .scene-rain { animation: scene-rain .7s linear infinite; }
+@keyframes scene-rain { from { transform: translate(8px, -60px); } to { transform: translate(-26px, 420px); } }
+.tree-scene .scene-snow { animation: scene-snow linear infinite; }
+@keyframes scene-snow {
+  0% { transform: translate(0, -40px); }
+  50% { transform: translate(10px, 190px); }
+  100% { transform: translate(-6px, 420px); }
+}
+.tree-scene .scene-drift { animation: scene-drift 30s ease-in-out infinite alternate; }
+@keyframes scene-drift { to { transform: translateX(-24px); } }
+.tree-scene .scene-breathe { animation: scene-breathe 6s ease-in-out infinite; }
+@keyframes scene-breathe { 50% { opacity: .7; } }
+@media (prefers-reduced-motion: reduce) {
+  .tree-scene :is(.scene-rain, .scene-snow, .scene-drift, .scene-breathe, .scene-bulb) { animation: none !important; }
+}
+/* 필름 질감과 비네팅. 비네팅은 밤에 더 짙다. */
+.tree-scene .scene-grain { mix-blend-mode: overlay; opacity: .35; }
+.tree-scene .scene-vignette {
+  background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(0 0 0 / var(--vignette, .28)) 100%);
+}
+.tree-scene[data-time="night"] { --vignette: .55; }
