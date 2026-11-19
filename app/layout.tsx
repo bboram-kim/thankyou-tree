@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "감사 트리",
-  description: "링크를 받은 사람들이 사진 오너먼트와 감사 한 줄을 달아 주는 연말 감사 트리",
+  title: "Thank You Tree",
+  description: "링크를 받은 사람들이 사진 오너먼트와 감사 한 줄을 달아 주는 연말 Thank You Tree",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

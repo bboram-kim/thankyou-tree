@@ -14,6 +14,7 @@ const cutout = new Blob(["cutout"], { type: "image/png" });
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 vi.mock("./shrink-image", () => ({ shrinkImage: async (file: File) => file }));
+vi.mock("./trim-transparent", () => ({ trimTransparent: async (blob: Blob) => blob }));
 vi.mock("./actions", () => ({ addOrnamentAction: vi.fn(async () => {}) }));
 vi.mock("@/lib/supabase", () => ({
   createSupabase: () => ({ storage: { from: () => ({ upload }) } }),

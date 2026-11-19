@@ -51,7 +51,7 @@ export function CreateTreeForm() {
   return (
     <>
       <PageHead
-        title="감사 트리를 만들어 보세요"
+        title="Thank You Tree를 만들어 보세요"
         description="링크를 받은 사람들이 자기 사진으로 오너먼트를 만들고, 감사 한 줄을 적어 달아 줘요. 메시지는 나만 볼 수 있어요."
       />
       <TreeScene ornaments={[]} />
@@ -62,7 +62,7 @@ export function CreateTreeForm() {
             id="owner-name"
             value={name}
             maxLength={OWNER_NAME_MAX}
-            placeholder="예: 이도윤"
+            placeholder="예: 김보람"
             autoComplete="off"
             onChange={(e) => setName(e.target.value)}
           />

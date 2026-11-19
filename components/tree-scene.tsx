@@ -20,7 +20,7 @@ export function OrnamentImage({ imageUrl }: { imageUrl: string }) {
       src={imageUrl}
       alt=""
       draggable={false}
-      className="pointer-events-none aspect-square w-full object-contain drop-shadow-md"
+      className="pointer-events-none aspect-square w-full object-contain object-top drop-shadow-md"
     />
   );
 }

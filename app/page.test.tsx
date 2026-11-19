@@ -9,7 +9,7 @@ test("홈 화면은 트리 만들기 화면이다 (AC1)", () => {
   render(<Home />);
 
   expect(
-    screen.getByRole("heading", { level: 1, name: "감사 트리를 만들어 보세요" }),
+    screen.getByRole("heading", { level: 1, name: "Thank You Tree를 만들어 보세요" }),
   ).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "트리 만들기" })).toBeDisabled();
 });
