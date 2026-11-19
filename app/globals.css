@@ -6,6 +6,9 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-star: var(--star);
+  /* 나눔고딕은 400, 700, 800만 있다. 버튼, 제목, 이름표는 700으로 보이게 한다. */
+  --font-weight-medium: 700;
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
@@ -81,6 +84,13 @@
   --sidebar-ring: oklch(0.709 0.01 56.259);
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.25);
+  /* 트리 표면(직접 그리는 핵심 화면) */
+  --scene-top: oklch(0.96 0.02 85);
+  --scene-bottom: oklch(0.93 0.025 80);
+  --tree: oklch(0.42 0.08 155);
+  --tree-dark: oklch(0.35 0.07 155);
+  --trunk: oklch(0.42 0.06 55);
+  --star: oklch(0.82 0.14 85);
 }
 
 .dark {

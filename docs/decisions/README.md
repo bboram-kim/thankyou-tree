@@ -4,3 +4,5 @@
 
 - [ui-composition](ui-composition.md) — Read when choosing UI components, page composition, visual tokens, or custom interface boundaries.
 - [dependency-versions](dependency-versions.md) — Read when upgrading dependencies, pinning versions, or wondering why TypeScript stays on 6.x.
+- [owner-access](owner-access.md) — Read when deciding who counts as a tree owner, what the share and owner links allow, or adding owner-only actions.
+- [data-storage](data-storage.md) — Read when adding tables, functions, or storage buckets, or choosing where app data lives.
