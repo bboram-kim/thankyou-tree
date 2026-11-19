@@ -3,7 +3,11 @@
 import { useState } from "react";
 
 import { PageHead, StickyActions } from "@/components/page-layout";
-import { OrnamentImage, TreeScene } from "@/components/tree-scene";
+import {
+  OrnamentImage,
+  TreeScene,
+  type SceneAmbience,
+} from "@/components/tree-scene";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -21,10 +25,12 @@ import type { OwnerOrnament } from "./tree-api";
 export function OwnerTree({
   shareToken,
   ornaments,
+  ambience,
 }: {
   ownerName: string;
   shareToken: string;
   ornaments: OwnerOrnament[];
+  ambience?: SceneAmbience;
 }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -41,6 +47,7 @@ export function OwnerTree({
         }
       />
       <TreeScene
+        ambience={ambience}
         ornaments={ornaments.map((o) => ({
           id: o.id,
           imageUrl: o.imageUrl,

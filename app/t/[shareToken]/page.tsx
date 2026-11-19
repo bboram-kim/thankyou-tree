@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { PageHead, StickyActions } from "@/components/page-layout";
+import { NightPage, PageHead, StickyActions } from "@/components/page-layout";
 import { TreeScene } from "@/components/tree-scene";
 import { buttonVariants } from "@/components/ui/button";
 import { getVisitorTree } from "@/features/tree/tree-api";
+import { getAmbience } from "@/features/weather/ambience";
 
 export default async function VisitorTreePage({
   params,
@@ -12,9 +13,11 @@ export default async function VisitorTreePage({
   const { shareToken } = await params;
   const tree = await getVisitorTree(shareToken);
   if (!tree) notFound();
+  const ambience = await getAmbience(tree.region);
 
   return (
     <>
+      <NightPage night={ambience.time === "night"} />
       <PageHead
         title={`${tree.ownerName}의 트리`}
         description={
@@ -23,7 +26,7 @@ export default async function VisitorTreePage({
             : `오너먼트 ${tree.ornaments.length}개가 달려 있어요`
         }
       />
-      <TreeScene ornaments={tree.ornaments} />
+      <TreeScene ornaments={tree.ornaments} ambience={ambience} />
       <StickyActions>
         <Link
           href={`/t/${shareToken}/new`}

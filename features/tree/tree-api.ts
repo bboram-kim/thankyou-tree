@@ -1,10 +1,16 @@
+import type { KmaGrid } from "@/lib/kma-grid";
 import { createSupabase, ornamentImageUrl } from "@/lib/supabase";
 
 import type { Position } from "./rules";
 
 /** 공유 링크 쪽에 나가는 오너먼트. 이름과 메시지는 타입에도 없다. */
 export type VisitorOrnament = { id: string; imageUrl: string } & Position;
-export type VisitorTree = { ownerName: string; ornaments: VisitorOrnament[] };
+/** region: 트리 지역(기상청 격자 번호). 격자보다 정밀한 위치는 없다. */
+export type VisitorTree = {
+  ownerName: string;
+  region: KmaGrid;
+  ornaments: VisitorOrnament[];
+};
 
 export type OwnerOrnament = VisitorOrnament & {
   senderName: string;
@@ -14,9 +20,11 @@ export type OwnerOrnament = VisitorOrnament & {
 export type OwnerTree = {
   ownerName: string;
   shareToken: string;
+  region: KmaGrid;
   ornaments: OwnerOrnament[];
 };
 
+type RegionRow = { grid_nx: number; grid_ny: number };
 type Row = { id: string; image_path: string; x: number; y: number };
 type OwnerRow = Row & {
   sender_name: string;
@@ -30,9 +38,11 @@ const postedOnFormat = new Intl.DateTimeFormat("ko-KR", {
   timeZone: "Asia/Seoul",
 });
 
-export async function createTree(ownerName: string) {
+export async function createTree(ownerName: string, region: KmaGrid) {
   const { data, error } = await createSupabase().rpc("ty_create_tree", {
     p_owner_name: ownerName,
+    p_grid_nx: region.nx,
+    p_grid_ny: region.ny,
   });
   if (error) throw new Error(error.message);
   const row = data as { share_token: string; owner_token: string };
@@ -47,9 +57,10 @@ export async function getVisitorTree(
   });
   if (error) throw new Error(error.message);
   if (!data) return null;
-  const tree = data as { owner_name: string; ornaments: Row[] };
+  const tree = data as RegionRow & { owner_name: string; ornaments: Row[] };
   return {
     ownerName: tree.owner_name,
+    region: { nx: tree.grid_nx, ny: tree.grid_ny },
     ornaments: tree.ornaments.map((o) => ({
       id: o.id,
       imageUrl: ornamentImageUrl(o.image_path),
@@ -67,7 +78,7 @@ export async function getOwnerTree(
   });
   if (error) throw new Error(error.message);
   if (!data) return null;
-  const tree = data as {
+  const tree = data as RegionRow & {
     owner_name: string;
     share_token: string;
     ornaments: OwnerRow[];
@@ -75,6 +86,7 @@ export async function getOwnerTree(
   return {
     ownerName: tree.owner_name,
     shareToken: tree.share_token,
+    region: { nx: tree.grid_nx, ny: tree.grid_ny },
     ornaments: tree.ornaments.map((o) => ({
       id: o.id,
       imageUrl: ornamentImageUrl(o.image_path),

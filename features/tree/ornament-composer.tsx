@@ -11,6 +11,7 @@ import {
   OrnamentImage,
   ornamentFrameClass,
   TreeScene,
+  type SceneAmbience,
 } from "@/components/tree-scene";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -50,9 +51,11 @@ type Photo =
 export function OrnamentComposer({
   shareToken,
   ornaments = [],
+  ambience,
 }: {
   shareToken: string;
   ornaments?: VisitorOrnament[];
+  ambience?: SceneAmbience;
 }) {
   const router = useRouter();
   const [step, setStep] = useState<"make" | "place">("make");
@@ -133,6 +136,7 @@ export function OrnamentComposer({
     return (
       <PlaceStep
         ornaments={ornaments}
+        ambience={ambience}
         imageUrl={photo.previewUrl}
         position={position}
         onMove={setPosition}
@@ -275,6 +279,7 @@ function PhotoArea({ photo, onPick }: { photo: Photo; onPick: () => void }) {
 
 function PlaceStep({
   ornaments,
+  ambience,
   imageUrl,
   position,
   onMove,
@@ -285,6 +290,7 @@ function PlaceStep({
   onHang,
 }: {
   ornaments: VisitorOrnament[];
+  ambience?: SceneAmbience;
   imageUrl: string;
   position: Position;
   onMove: (position: Position) => void;
@@ -308,7 +314,7 @@ function PlaceStep({
         title="어디에 달까요?"
         description="오너먼트를 끌어서 달고 싶은 곳에 놓아 주세요."
       />
-      <TreeScene ref={scene} ornaments={ornaments} dimmed>
+      <TreeScene ref={scene} ornaments={ornaments} ambience={ambience} dimmed>
         <button
           type="button"
           aria-label="내 오너먼트, 끌어서 위치를 정하세요"

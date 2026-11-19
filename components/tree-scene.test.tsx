@@ -30,3 +30,29 @@ test("선택 핸들러가 있으면 오너먼트를 눌러 고를 수 있다 (AC
 
   expect(onSelect).toHaveBeenCalledWith("a");
 });
+
+const parts = (container: HTMLElement) =>
+  [...container.querySelectorAll("[data-part]")].map((el) => el.getAttribute("data-part"));
+
+test.each([
+  ["clear", "day", ["sun", "bulbs"]],
+  ["clear", "night", ["moon", "stars", "warm-glow", "bulbs"]],
+  ["cloudy", "day", ["clouds", "bulbs"]],
+  ["cloudy", "night", ["clouds", "warm-glow", "bulbs"]],
+  ["rain", "day", ["clouds", "bulbs", "rain"]],
+  ["rain", "night", ["clouds", "warm-glow", "bulbs", "rain"]],
+  ["snow", "day", ["bulbs", "snow"]],
+  ["snow", "night", ["moon", "warm-glow", "bulbs", "snow"]],
+] as const)("%s·%s 장면은 날씨와 낮밤에 맞는 요소를 그린다 (AC6, AC10)", (weather, time, expected) => {
+  const { container } = render(<TreeScene ornaments={[]} ambience={{ weather, time }} />);
+  const scene = screen.getByTestId("tree-scene");
+  expect(scene).toHaveAttribute("data-weather", weather);
+  expect(scene).toHaveAttribute("data-time", time);
+  expect(parts(container)).toEqual(expected);
+});
+
+test("날씨·낮밤을 주지 않으면 맑은 낮으로 그린다 (AC12)", () => {
+  render(<TreeScene ornaments={[]} />);
+  expect(screen.getByTestId("tree-scene")).toHaveAttribute("data-time", "day");
+  expect(screen.getByTestId("tree-scene")).toHaveAttribute("data-weather", "clear");
+});
