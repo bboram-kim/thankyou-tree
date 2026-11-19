@@ -6,3 +6,4 @@
 - [dependency-versions](dependency-versions.md) — Read when upgrading dependencies, pinning versions, or wondering why TypeScript stays on 6.x.
 - [owner-access](owner-access.md) — Read when deciding who counts as a tree owner, what the share and owner links allow, or adding owner-only actions.
 - [data-storage](data-storage.md) — Read when adding tables, functions, or storage buckets, or choosing where app data lives.
+- [tree-ambience](tree-ambience.md) — Read when changing how the tree scene reflects weather or day/night, storing or exposing the tree's region, calling the KMA forecast API, or adding night styling to tree pages.
