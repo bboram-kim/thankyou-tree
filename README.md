@@ -19,6 +19,10 @@ bun dev
 
 [http://localhost:3000](http://localhost:3000)에서 결과를 확인할 수 있습니다.
 
+## 오픈소스 라이선스
+
+- 오너먼트 사진의 배경 제거에 [`@imgly/background-removal`](https://github.com/imgly/background-removal-js)(AGPL-3.0)을 씁니다. 이 저장소의 소스는 공개되어 있어 AGPL의 소스 공개 조건을 따릅니다.
+
 ## 스크립트
 
 | 명령어 | 설명 |
